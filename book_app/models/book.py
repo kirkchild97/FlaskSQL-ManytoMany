@@ -1,4 +1,3 @@
-from book_app.config.MySQLConnection import connectToMySQL
 from book_app.config.mysqlconnection import connectToMySQL as sqlConnect
 from book_app.models import author as getAuthor
 
@@ -24,11 +23,10 @@ class Book:
     def get_book_details(cls, data):
         query = """SELECT id, title, num_of_pages FROM books
         WHERE id = %(book_id)s;"""
-        results = connectToMySQL('books_and_authors')
+        results = sqlConnect('books_and_authors').query_db(query, data)
         bookInfo = results[0]
-
         query = """SELECT authors.id, authors.name, favorites.book_id FROM favorites
-        LEFT JOIN authors ON authors.id = favorites.author_id WHERE favorites.book_id = %(id)s;"""
+        LEFT JOIN authors ON authors.id = favorites.author_id WHERE favorites.book_id = %(book_id)s;"""
         results = sqlConnect('books_and_authors').query_db(query, data)
         print(f"Book Results: {results}")
         bookInfo['favorite_authors'] = []

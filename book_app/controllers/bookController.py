@@ -54,10 +54,13 @@ def save_book():
 
 @app.route('/books/<int:book_id>')
 def bookDetail(book_id):
-    
-    render_template('bookDetail.html')
+    data = {
+        "book_id" : book_id
+    }
+    book_info = Book.get_book_details(data)
+    return render_template('bookDetail.html', bookData = book_info, id = book_id)
 
-@app.route('/books/<int:book_id>/addFav')
+@app.route('/books/<int:book_id>/addFav', methods = ['POST'])
 def bookAddFavorites(book_id):
     data = {
         'book_id' : book_id,

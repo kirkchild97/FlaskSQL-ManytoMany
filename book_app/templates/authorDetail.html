@@ -36,7 +36,7 @@
                 <h4>Favorites</h4>
                 <div class="card d-flex flex-column p-2">
                     {% for favs in  authorFavs['favorite_books'] %}
-                        <a href="http://localhost:5000/books/" class="mb-4">{{favs['title']}}</a>
+                        <a href="http://localhost:5000/books/{{favs['id']}}" class="mb-4">{{favs['title']}}</a>
                     {% endfor %}
                 </div>
             </div>
