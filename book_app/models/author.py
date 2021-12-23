@@ -1,4 +1,5 @@
 from book_app.config.mysqlconnection import connectToMySQL as sqlConnect
+from book_app.models import book as getBook
 
 class Author:
     def __init__(self, data):
@@ -23,14 +24,27 @@ class Author:
         return authors
 
     @classmethod
-    def get_author_details(cls, int:id):
-        query = """SELECT authors.name, books.title FROM authors
-        LEFT JOIN favorites ON authors.id = favorites.author_id
-        LEFT JOIN books ON favorites.book_id = books.id
-        WHERE authors.id = %(id)s;"""
-        results = sqlConnect('books_and_authors').query_db(query, id)
-        author_fav_books = []
-        for favs in results:
-            author_fav_books.append(favs)
-        # print(f"Result: {author_fav_books}")
-        return author_fav_books
+    def get_author_details(cls, data):
+        query = """SELECT id, name FROM authors
+        WHERE id = %(id)s;"""
+        results = sqlConnect('books_and_authors').query_db(query, data)
+        authorInfo = results[0]
+        query = """SELECT books.id, books.title, favorites.author_id FROM favorites
+        LEFT JOIN books ON books.id = favorites.book_id WHERE favorites.author_id = %(id)s;"""
+        results = sqlConnect('books_and_authors').query_db(query, data)
+        print(f"Book Results: {results}")
+        authorInfo['favorite_books'] = []
+        for book in results:
+            authorInfo['favorite_books'].append(book)
+        results = getBook.Book.get_all_books()
+        authorInfo['not_favorited'] = []
+        for book in results:
+            if len(authorInfo['favorite_books']) > 0:
+                for favs in authorInfo['favorite_books']:
+                    if book['id'] == favs['id']:
+                        break
+                    if favs == authorInfo['favorite_books'][len(authorInfo['favorite_books']) - 1]:
+                        authorInfo['not_favorited'].append(book)
+            else:
+                authorInfo['not_favorited'].append(book)
+        return authorInfo

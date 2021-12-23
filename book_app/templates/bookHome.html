@@ -19,20 +19,24 @@
     </div>
     <div class="container mx-auto row p-4">
         <div class="col">
-            <form action="" class="card card-body bg-dark">
+            <form action="/books/createNew" method="post" class="card card-body bg-dark">
                 <h3 class="card-title text-light">New <span class="text-warning">Book</span></h3>
                 <label class="text-light" for="name">Title:</label>
-                <input type="text" name="name" id="name" required>
+                <input type="text" name="title" id="name" required>
+                <label for="numPages" class="text-light">Number of Pages</label>
+                <input type="number" name="num_of_pages" id="numPages" required>
                 <input class="btn btn-warning w-50 mx-auto mt-4" type="submit" value="New Author">
             </form>
         </div>
         <div class="col">
             <h3>Books</h3>
             <table class="card border-dark border-2 p-3">
-                <tr class="d-flex justify-content-between">
-                    <td><a href="#">Ben Franklin Autobiography</a></td>
-                    <td>255 Pages</td>
-                </tr>
+                {% for book in books %}
+                    <tr class="d-flex justify-content-between">
+                        <td><a href="http://localhost:5000/books/{{book['id']}}">{{book['title']}}</a></td>
+                        <td>{{ book['num_of_pages'] }} Pages</td>
+                    </tr>
+                {% endfor %}
             </table>
         </div>
     </div>
